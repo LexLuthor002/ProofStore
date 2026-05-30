@@ -1,36 +1,46 @@
-# [Project name]
+# ProofStore
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Decentralized file certification on Sui Blockchain — hash client-side, store on Walrus, sign with your Sui wallet, verify forever.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080)
+- `pnpm --filter @workspace/proofstore run dev` — run the frontend (assigned port)
 - `pnpm run typecheck` — full typecheck across all packages
-- `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required env: `TATUM_API_KEY` — Tatum API key for Walrus storage and Sui RPC proxy
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- **Frontend**: React 19 + Vite, Tailwind CSS v4, @mysten/dapp-kit (Sui wallet), wouter, TanStack Query
+- **Backend**: Express 5, file-based JSON storage (`artifacts/api-server/data/`)
+- **Blockchain**: Sui Mainnet (wallet identity + signing)
+- **Storage**: Walrus decentralized storage via Tatum API
+- Build: esbuild (API server CJS bundle)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/proofstore/src/` — React frontend (pages, components, context, providers)
+- `artifacts/api-server/src/routes/` — Express routes (certificates, sui-rpc, walrus, health)
+- `artifacts/api-server/data/certificates.json` — certificate store (file-based, auto-created)
+- `artifacts/api-server/data/blobs/` — Walrus blob metadata cache
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- **File-based storage** — certificates are stored as JSON in `data/certificates.json`, no DB needed. Simple, zero-config, works immediately.
+- **Client-side hashing** — SHA-256/SHA-512 computed in browser via Web Crypto API; files never leave the device during verification.
+- **Sui wallet as identity** — no accounts, no passwords; wallet address is the user's identity. Signatures are Ed25519/secp256k1, gas-free.
+- **Tatum API proxy** — `TATUM_API_KEY` lives only on the backend; never exposed to the browser. Falls back to public Sui RPC if key is absent.
+- **Walrus blob caching** — blob metadata cached locally in `data/blobs/` to reduce Tatum API calls.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+ProofStore creates tamper-proof, cryptographically verifiable certificates for any file:
+- **Certify**: drop a file → hash client-side → upload to Walrus → sign with wallet → certificate stored
+- **Verify**: drop any file → hash client-side → check if certificate exists → instant result
+- **Browse**: paginated registry of all certificates, filterable by wallet
+- **Search**: query by hash, blob ID, filename, or wallet address
+- **Dashboard**: stats and recent activity feed
 
 ## User preferences
 
@@ -38,7 +48,10 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- `TATUM_API_KEY` is required for Walrus uploads. Without it, `/api/walrus/upload` returns 503. Sui RPC falls back to public node if key is missing.
+- The `data/` directory in `artifacts/api-server/` is auto-created on first write.
+- `pnpm install` must be run from workspace root after adding new packages to proofstore.
+- The API server's `dev` script runs `build` then `start` — changes require a workflow restart.
 
 ## Pointers
 
