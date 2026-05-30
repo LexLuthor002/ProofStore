@@ -98,6 +98,47 @@ router.get("/activity", (req, res) => {
   res.json(activity);
 });
 
+router.get("/:id/verify-signature", async (req, res) => {
+  const cert = load().find((c) => c.id === req.params["id"]);
+  if (!cert) { res.status(404).json({ error: "Certificate not found" }); return; }
+
+  if (!cert.signature) {
+    res.json({
+      verified: false,
+      reason: "no_signature",
+      message: "This certificate has no wallet signature attached",
+    });
+    return;
+  }
+
+  try {
+    const { verifyPersonalMessageSignature } = await import("@mysten/sui/verify");
+    const msgBytes = new TextEncoder().encode(`ProofStore:certify:${cert.sha256}`);
+    const publicKey = await verifyPersonalMessageSignature(msgBytes, cert.signature);
+    const recoveredAddress = publicKey.toSuiAddress();
+    const matchesOwner = recoveredAddress === cert.ownerAddress;
+    const schemeMap: Record<number, string> = { 0: "Ed25519", 1: "Secp256k1", 2: "Secp256r1" };
+    const scheme = schemeMap[publicKey.flag()] ?? `Unknown(${String(publicKey.flag())})`;
+
+    res.json({
+      verified: matchesOwner,
+      recoveredAddress,
+      ownerAddress: cert.ownerAddress,
+      matchesOwner,
+      scheme,
+      publicKey: publicKey.toBase64(),
+      signedMessage: `ProofStore:certify:${cert.sha256}`,
+    });
+  } catch (err) {
+    res.json({
+      verified: false,
+      reason: "invalid_signature",
+      message: "Signature is cryptographically invalid",
+      error: err instanceof Error ? err.message : String(err),
+    });
+  }
+});
+
 router.get("/:id", (req, res) => {
   const cert = load().find((c) => c.id === req.params["id"]);
   if (!cert) { res.status(404).json({ error: "Certificate not found" }); return; }

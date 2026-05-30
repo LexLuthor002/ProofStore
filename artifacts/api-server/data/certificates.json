@@ -1,0 +1,19 @@
+[
+  {
+    "id": "8e83027a-5383-4212-8cea-9c1db9dfeca0",
+    "filename": "fmz19b4.jpeg",
+    "fileSize": 6105,
+    "mimeType": "image/jpeg",
+    "sha256": "344e06aecc5d4ccc5085852e29989f2ef18471469728696d7a4b1e78194baffd",
+    "sha512": "75bd533fa8e72e8dff2545df3e03912df8ad7752615c37011f9b50de39635627a3a2f229af57f81394b2da77070f9c5d18d17bdc61ec240685ef63dffeaf6005",
+    "blobId": "-Jr3Fq7UwrLI9TZMvDC25DwgZMs5_ue1KH8bWCFMJCw",
+    "signature": "ACFNbQPvQf02aTTj/Hc2tJ+6pjZuJwGX1d7AVi5TWf++N/2FGZhkdjf6qS28sF5vPOPq+HizrEf8uvtotUAMRwzgUTZBcq8m8Ai8AZvFiHzvufp09vkXOnlRWtrDLHAL/g==",
+    "signerPublicKey": null,
+    "txHash": null,
+    "ownerAddress": "0xe57adb827b7254f78d7a4396389ec2d7b83770d28f0724ebcb258db4a1509aae",
+    "status": "confirmed",
+    "createdAt": "2026-05-30T23:15:24.597Z",
+    "certifiedAt": "2026-05-30T23:15:24.597Z",
+    "description": ""
+  }
+]

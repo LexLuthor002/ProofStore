@@ -129,6 +129,24 @@ export async function verifyCertificate(sha256: string): Promise<VerifyResult> {
   return res.json() as Promise<VerifyResult>;
 }
 
+export interface SignatureVerifyResult {
+  verified: boolean;
+  reason?: string;
+  message?: string;
+  recoveredAddress?: string;
+  ownerAddress?: string;
+  matchesOwner?: boolean;
+  scheme?: string;
+  publicKey?: string;
+  signedMessage?: string;
+  error?: string;
+}
+
+export async function verifyCertSignature(certId: string): Promise<SignatureVerifyResult> {
+  const res = await fetch(`${API_BASE}/certificates/${certId}/verify-signature`);
+  return res.json() as Promise<SignatureVerifyResult>;
+}
+
 export async function searchCertificates(q: string, type = "all"): Promise<{ certificates: Certificate[]; total: number }> {
   const params = new URLSearchParams({ q, type });
   const res = await fetch(`${API_BASE}/certificates/search/q?${params}`);
