@@ -83,7 +83,7 @@ export default function LandingPage() {
             {isConnecting ? "Connecting…" : "Connect Wallet to Start"}
           </button>
           <a
-            href="https://github.com/ONOSPETER/Shadow-Post"
+            href="https://github.com/LexLuthor002/ProofStore"
             target="_blank"
             rel="noreferrer"
             className="px-8 py-3.5 rounded text-sm font-medium text-white/50 transition-all"
@@ -92,6 +92,17 @@ export default function LandingPage() {
             onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#1a1a1a")}
           >
             View Source
+          </a>
+          <a
+            href="https://proof-store--BlackBuild.replit.app"
+            target="_blank"
+            rel="noreferrer"
+            className="px-8 py-3.5 rounded text-sm font-medium text-white/50 transition-all"
+            style={{ background: "#0a0a0a", border: "1px solid #1a1a1a" }}
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#2a2a2a")}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = "#1a1a1a")}
+          >
+            Live Demo
           </a>
         </div>
 
